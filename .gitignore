@@ -9,7 +9,7 @@ last_uid.txt
 watcher.lock
 processed_emails.json
 
-# Personal vault data (logs, done emails, LinkedIn posts)
+# Personal vault data (runtime files — not for version control)
 vault/Logs/
 vault/Done/
 vault/LinkedIn_Posts/
@@ -18,6 +18,14 @@ vault/Pending_Approval/
 vault/Approved/
 vault/Rejected/
 vault/Plans/
+vault/Dashboard.md
+vault/Briefings/
+vault/scheduled_posts.json
+vault/Social_Posts/
+
+# Personal/marketing content
+Selling_Strategy/
+marketing/
 
 # PyInstaller build artifacts
 build/

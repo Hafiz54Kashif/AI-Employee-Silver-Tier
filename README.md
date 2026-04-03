@@ -1,219 +1,87 @@
-# Personal AI Employee — Gold Tier
-### Hackathon 0: Building Autonomous FTEs in 2026
-> *Your life and business on autopilot. Local-first, agent-driven, human-in-the-loop.*
+# AI Employee — Silver Tier
+### Autonomous Personal AI Agent | Gmail + LinkedIn + Flask Dashboard
+
+> *Your personal AI employee that works 24/7 — monitors your inbox, replies intelligently, and posts to LinkedIn daily. Fully autonomous. Zero manual effort.*
 
 ---
 
-## Tier Declaration
-**Gold Tier — Autonomous Employee** ✅
+## What It Does
 
-| Tier | Status |
-|------|--------|
-| Bronze | ✅ Complete |
-| Silver | ✅ Complete |
-| Gold   | ✅ Complete |
-
----
-
-## Submission Info
-
-| Item | Detail |
-|------|--------|
-| Tier | **Gold — Autonomous Employee** |
-| Demo Video | 5-10 minute walkthrough of all features |
-| Security | Credentials in `.env` — never committed (see Security section) |
-| Submit Form | https://forms.gle/JR9T1SJq5rmQyGkGA |
-
----
-
-## Overview
-
-**Personal AI Employee** is a fully autonomous digital worker that monitors your Gmail, processes tasks intelligently, posts on LinkedIn daily, and handles sensitive actions with human approval — all powered by **Claude Code** as the AI brain and **Obsidian Vault** as the persistent memory/dashboard.
-
-Built for **Hackathon 0 by PIAIC**, this system demonstrates a real Digital FTE (Full-Time Equivalent) that works 24/7 without manual intervention.
-
----
-
-## Gold Tier Checklist
-
-### Bronze Requirements
-| Requirement | Status | Evidence |
-|-------------|--------|----------|
-| Dashboard.md + Company_Handbook.md | ✅ Done | `vault/Dashboard.md`, `vault/Company_Handbook.md` |
-| Folder structure (Needs_Action, Done, Plans, Logs) | ✅ Done | Full vault structure |
-| Claude reads/writes vault + Plan.md generation | ✅ Done | `vault/Plans/` — 20+ plans generated |
-| 1+ Watcher script | ✅ Done | Gmail + Filesystem + LinkedIn |
-| Agent Skills | ✅ Done | 11 skills in `skills/` folder |
-
-### Silver Requirements
-| Requirement | Status | Evidence |
-|-------------|--------|----------|
-| 2+ Watcher scripts | ✅ Done | Gmail + Filesystem + LinkedIn = 3 watchers |
-| LinkedIn Auto-Post for business | ✅ Done | `watchers/linkedin_watcher.py` |
-| Plan.md generation loop | ✅ Done | `vault/Plans/` — 20+ plans |
-| One working MCP server | ✅ Done | `skills/gmail_mcp_server.py` |
-| Human-in-the-loop approval | ✅ Done | Pending_Approval → Approved/Rejected |
-| Basic Scheduling | ✅ Done | Daily 9 AM cron + `scripts/setup_scheduler.bat` |
-
-### Gold Requirements
-| Requirement | Status | Evidence |
-|-------------|--------|----------|
-| Full cross-domain integration | ✅ Done | Email + LinkedIn + Facebook + Instagram + Twitter + Odoo |
-| Odoo Community MCP (JSON-RPC) | ✅ Done | `skills/odoo_mcp_server.py` + `skills/odoo_accounting.md` |
-| Facebook & Instagram integration | ✅ Done | `watchers/facebook_instagram_watcher.py` |
-| Twitter (X) integration | ✅ Done | `watchers/twitter_watcher.py` |
-| Multiple MCP servers | ✅ Done | Gmail MCP + Odoo MCP |
-| Weekly Business + Accounting Audit | ✅ Done | `watchers/ceo_briefing_generator.py` + Odoo audit |
-| Error recovery + graceful degradation | ✅ Done | `watchers/watchdog.py` with auto-restart |
-| Comprehensive audit logging | ✅ Done | `vault/Logs/` — every action logged |
-| Ralph Wiggum Stop Hook | ✅ Done | `.claude/hooks/ralph_wiggum_stop_hook.py` |
-| Architecture documentation | ✅ Done | This README |
-| All AI functionality as Agent Skills | ✅ Done | 11 skills in `skills/` folder |
-
----
-
-## Gold Tier Features
-
-### 1. Ralph Wiggum Stop Hook (Autonomous Loop)
-Keeps Claude working until ALL tasks in `vault/Needs_Action/` are complete.
-- **File:** `.claude/hooks/ralph_wiggum_stop_hook.py`
-- **How:** Registered as Claude Code Stop hook — intercepts every exit attempt
-- **Loop:** Checks Needs_Action → tasks remain? re-inject prompt → tasks done? allow exit
-- **Safety:** Max 20 iterations (configurable via `RALPH_MAX_ITERATIONS` env var)
-
-### 2. Odoo Community Accounting MCP
-Full accounting integration via Odoo JSON-RPC API.
-- **File:** `skills/odoo_mcp_server.py`
-- **Tools:** Get invoices, create draft invoices, get expenses, revenue summary, weekly audit
-- **Safety:** ALL financial actions create draft only — require human approval to post
-- **Audit:** Weekly financial reports saved to `vault/Logs/odoo_weekly_audit_*.md`
-
-### 3. Facebook & Instagram Auto-Posting
-Post business content via Meta Graph API.
-- **File:** `watchers/facebook_instagram_watcher.py`
-- **Facebook:** Drop `.md` file in `vault/Social_Posts/Facebook/`
-- **Instagram:** Drop `.md` file with `image_url:` frontmatter in `vault/Social_Posts/Instagram/`
-- **Summary:** Page insights + engagement stats fetched weekly
-
-### 4. Twitter (X) Auto-Posting
-Post tweets via Twitter API v2 + Tweepy.
-- **File:** `watchers/twitter_watcher.py`
-- **Usage:** Drop `.md` file in `vault/Social_Posts/Twitter/`
-- **Auto-truncation:** Text truncated to 280 chars automatically
-- **Summary:** Weekly engagement report every Sunday → `vault/Logs/twitter_weekly_summary_*.md`
-
-### 5. Watchdog + Error Recovery
-- Auto-restarts any crashed watcher process
-- Max 5 restarts per session before alerting human
-- Logs all restart events with timestamps
-- Updates Dashboard health status every 60 seconds
-
-### 6. Weekly CEO Briefing (Monday Morning)
-Every Monday at 8 AM, Claude generates a briefing:
-- Revenue vs targets (from Odoo)
-- Tasks completed this week
-- Social media post summary (LinkedIn + Facebook + Twitter)
-- Bottlenecks and proactive suggestions
-- Saved to `vault/Briefings/YYYY-MM-DD_Monday_Briefing.md`
-
----
-
-## Innovation Highlights
-
-This project goes beyond basic automation — here's what makes it stand out:
-
-| Innovation | Description |
-|------------|-------------|
-| **5-Watcher Perception Layer** | Gmail + Filesystem + LinkedIn + Facebook/Instagram + Twitter — AI has eyes on all inputs |
-| **File-Based HITL Approval** | No UI needed — drag file to `/Approved` folder = approval. Simple, reliable, auditable |
-| **AI Content Generation** | Claude reads Business Goals and generates unique LinkedIn posts daily — not templates |
-| **Rotating Topic Schedule** | 7 different daily topics auto-rotate — AI Employee builds your brand automatically |
-| **Sensitivity Auto-Detection** | 15+ keywords trigger human approval — AI knows its own limits |
-| **Zero-Config Memory** | Obsidian vault = persistent memory — no database, no backend, fully local |
-| **Plan-Before-Act Pattern** | Every task gets a Plan.md before execution — full audit trail of AI reasoning |
+| Feature | Description |
+|---------|-------------|
+| **Gmail Auto-Reply** | Monitors your inbox every 2 minutes. Reads new emails, drafts professional replies, sends automatically |
+| **LinkedIn Auto-Posting** | Posts daily content to your LinkedIn at a scheduled time — from your own pre-written queue |
+| **Human-in-the-Loop** | Sensitive emails (payment, password, bank) are held for your approval before any action |
+| **Flask Dashboard** | Web UI to connect accounts, manage settings, review flagged emails, and schedule LinkedIn posts |
+| **Windows Installer** | Ships as a `.exe` — customers install it like any app, no coding required |
 
 ---
 
 ## System Architecture
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                  PERSONAL AI EMPLOYEE                   │
-│                   (Silver Tier)                         │
-└─────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────┐
+│                    AI EMPLOYEE SYSTEM                    │
+└──────────────────────────────────────────────────────────┘
 
-┌─────────────────────────────────────────────────────────┐
-│                  EXTERNAL SOURCES                       │
-│       Gmail          │      Files       │   LinkedIn    │
-└────────┬─────────────┴────────┬─────────┴──────┬────────┘
-         │                      │                │
-         ▼                      ▼                ▼
-┌─────────────────────────────────────────────────────────┐
-│                  PERCEPTION LAYER (Watchers)            │
-│  gmail_watcher.py │ filesystem_watcher.py │ linkedin_   │
-│                   │                       │ watcher.py  │
-└─────────┬─────────┴───────────┬───────────┴──────┬──────┘
-          │                     │                  │
-          ▼                     ▼                  ▼
-┌─────────────────────────────────────────────────────────┐
-│               OBSIDIAN VAULT (Local Memory)             │
-│  /Needs_Action/  │  /Plans/  │  /Done/  │  /Logs/       │
-│  /Pending_Approval/  │  /Approved/  │  /Rejected/       │
-│  Dashboard.md  │  Company_Handbook.md  │  Business_     │
-│                                         Goals.md        │
-└──────────────────────────┬──────────────────────────────┘
-                           │
-                           ▼
-┌─────────────────────────────────────────────────────────┐
-│               REASONING LAYER (Claude Code)             │
-│      Read → Sensitivity Check → Plan → Execute          │
-│           → Request Approval (if sensitive)             │
-└──────────────────────────┬──────────────────────────────┘
-                           │
-          ┌────────────────┴─────────────────┐
-          ▼                                  ▼
-┌──────────────────┐              ┌──────────────────────┐
-│ HUMAN-IN-THE-    │              │    ACTION LAYER       │
-│ LOOP APPROVAL    │──────────▶   │    Gmail MCP Server   │
-│ Move to          │              │    Send Email         │
-│ /Approved        │              │    Post to LinkedIn   │
-└──────────────────┘              └──────────────────────┘
+  Gmail Inbox              LinkedIn Profile
+      │                         │
+      ▼                         ▼
+┌─────────────┐         ┌───────────────────┐
+│gmail_watcher│         │linkedin_scheduler │
+│  (IMAP)     │         │  (time-based)     │
+└──────┬──────┘         └────────┬──────────┘
+       │                         │
+       ▼                         ▼
+┌──────────────────────────────────────────┐
+│            VAULT (Local Memory)          │
+│  Needs_Action/  Pending_Approval/  Done/ │
+│  Logs/  LinkedIn_Posts/  Approved/       │
+└────────────────────┬─────────────────────┘
+                     │
+          ┌──────────┴──────────┐
+          ▼                     ▼
+   ┌─────────────┐    ┌──────────────────┐
+   │  APPROVAL   │    │  AUTO-ACTIONS    │
+   │  (Human)    │    │  Reply Email     │
+   │  Dashboard  │    │  Post LinkedIn   │
+   └─────────────┘    └──────────────────┘
 ```
 
 ---
 
 ## Key Features
 
-### 1. Gmail Monitoring & Auto-Reply
-- `watchers/gmail_watcher.py` checks Gmail every 2 minutes
-- New emails saved as `.md` files in `vault/Needs_Action/`
-- Claude reads email, generates a plan, drafts reply
-- Reply sent via Gmail MCP server
+### 1. Gmail Auto-Reply (IMAP UID Watermark)
+- Connects via IMAP with App Password — no OAuth complexity
+- **UID watermark system:** saves inbox snapshot on first connect; only emails arriving *after* connection get auto-replied (no old email spam)
+- No-reply filter: ignores `noreply@`, `mailer-daemon@`, newsletters
+- Reply tone configurable: Professional / Friendly / Concise
 
-### 2. Human-in-the-Loop Approval
-- Sensitive keywords detected: `payment`, `password`, `bank`, `invoice`, etc.
-- Task moved to `vault/Pending_Approval/` automatically
-- Human reviews in Obsidian and moves to `vault/Approved/` or `vault/Rejected/`
-- `watchers/approval_watcher.py` monitors and executes approved tasks
+### 2. LinkedIn Auto-Posting
+- **Scheduler** (`linkedin_scheduler.py`) runs 24/7, triggers at your set time (default 9:00 AM)
+- Reads from your pre-scheduled posts queue — pick the exact date and content
+- **Watcher** (`linkedin_watcher.py`) detects new post files and publishes via LinkedIn API
+- One-click OAuth login — no LinkedIn Developer App setup needed for customers
 
-### 3. LinkedIn Auto-Posting
-- `watchers/linkedin_content_generator.py` runs daily at 9:00 AM
-- Claude generates professional post based on `vault/Business_Goals.md`
-- Post saved to `vault/LinkedIn_Posts/` as `.md` file
-- `watchers/linkedin_watcher.py` detects and publishes to LinkedIn automatically
-- Topics rotate daily: AI, product launch, customer success, agentic AI, etc.
+### 3. Human-in-the-Loop Approval
+- Keywords: `payment`, `password`, `bank`, `urgent`, `invoice` → auto-flagged
+- Flagged tasks move to `vault/Pending_Approval/` instead of being acted on
+- Review and approve/reject directly from the dashboard
+- `approval_watcher.py` executes approved tasks automatically
 
-### 4. Autonomous Task Processing
-- Drop any `.md` file in `drop_folder/`
-- Filesystem watcher detects it → moves to `vault/Needs_Action/`
-- Claude generates `vault/Plans/task_plan.md`
-- Task executed → moved to `vault/Done/`
-- `vault/Dashboard.md` updated in real-time
+### 4. Flask Dashboard
+- Connect Gmail (email + App Password) and LinkedIn (one-click OAuth)
+- Set auto-reply tone, check interval, sensitive keywords
+- Schedule LinkedIn posts by date with custom content
+- View full activity logs with timestamp breakdown
+- Toggle agent on/off without restarting
 
-### 5. Basic Scheduling
-- Session cron: daily 9 AM LinkedIn post generation
-- `scripts/setup_scheduler.bat`: Windows Task Scheduler setup for permanent scheduling
-- Watchers auto-start on Windows login
+### 5. Windows .exe Installer
+- Built with PyInstaller + Inno Setup
+- Customer installs → opens dashboard → enters their Gmail + LinkedIn → agent starts
+- All user data stored in `%APPDATA%\AI Employee` — not in the install folder
+- No Python, no terminal, no technical knowledge required
 
 ---
 
@@ -222,246 +90,189 @@ This project goes beyond basic automation — here's what makes it stand out:
 ```
 AI_Employee_Project/
 │
+├── dashboard/
+│   ├── app.py                        # Flask web dashboard
+│   └── templates/
+│       ├── base.html                 # Shared layout + navigation
+│       ├── index.html                # Home — stats + recent activity
+│       ├── accounts.html             # Connect Gmail & LinkedIn
+│       ├── emails.html               # Email settings + keywords
+│       ├── linkedin.html             # LinkedIn schedule + topics
+│       ├── approvals.html            # Review flagged emails
+│       ├── logs.html                 # Full activity log viewer
+│       └── settings.html             # Business name + general settings
+│
 ├── watchers/
-│   ├── gmail_watcher.py              # Monitors Gmail every 2 mins
-│   ├── filesystem_watcher.py         # Monitors drop_folder
-│   ├── approval_watcher.py           # Monitors Pending_Approval folder
-│   ├── linkedin_watcher.py           # Posts .md files to LinkedIn
-│   └── linkedin_content_generator.py # Generates daily LinkedIn content
+│   ├── gmail_watcher.py              # IMAP email monitor + auto-reply
+│   ├── linkedin_watcher.py           # Publishes .md files to LinkedIn
+│   ├── linkedin_scheduler.py         # Time-based scheduler (runs 24/7)
+│   ├── linkedin_content_generator.py # Fallback post generator (Claude AI)
+│   ├── approval_watcher.py           # Executes human-approved tasks
+│   └── watchdog.py                   # Process monitor + auto-restart
 │
 ├── skills/
-│   ├── process_tasks.md              # Task processing skill
+│   ├── gmail_mcp_server.py           # Gmail MCP server (send/read)
 │   ├── monitor_gmail.md              # Gmail monitoring skill
 │   ├── human_approval.md             # Approval workflow skill
 │   ├── send_email.md                 # Email sending skill
 │   ├── post_to_linkedin.md           # LinkedIn posting skill
+│   ├── process_tasks.md              # Task processing skill
 │   └── schedule_tasks.md             # Scheduling skill
 │
 ├── scripts/
-│   ├── task_processor.py             # Core task processor
-│   ├── logging_utils.py              # Logging utilities
-│   ├── setup_scheduler.bat           # Windows Task Scheduler setup
-│   ├── setup_scheduler.py            # Python scheduler setup
-│   ├── run_linkedin_generator.bat    # Launcher for LinkedIn generator
-│   └── run_linkedin_watcher.bat      # Launcher for LinkedIn watcher
+│   ├── task_processor.py             # Core task execution logic
+│   ├── logging_utils.py              # Shared logging utilities
+│   ├── setup_scheduler.py            # Windows Task Scheduler setup
+│   ├── setup_scheduler.bat           # One-click scheduler setup
+│   └── setup_tasks_admin.ps1         # PowerShell admin scheduler setup
 │
-├── vault/                            # Obsidian Vault
-│   ├── Needs_Action/                 # Tasks ready for AI processing
-│   ├── Pending_Approval/             # Sensitive tasks awaiting review
-│   ├── Approved/                     # Human-approved tasks
+├── vault/
+│   ├── Company_Handbook.md           # AI rules — edit to customize behaviour
+│   ├── Business_Goals.md             # Context for AI-generated content
+│   ├── Needs_Action/                 # Incoming tasks (auto-managed)
+│   ├── Pending_Approval/             # Flagged tasks awaiting review
+│   ├── Approved/                     # Human-approved (auto-executed)
 │   ├── Rejected/                     # Rejected tasks
-│   ├── Plans/                        # AI-generated plans (20+ plans)
-│   ├── Done/                         # Completed tasks
-│   │   └── linkedin_posted/          # Published LinkedIn posts
-│   ├── Logs/                         # Activity logs
-│   ├── LinkedIn_Posts/               # Pending LinkedIn posts
-│   ├── Dashboard.md                  # Live status board
-│   ├── Company_Handbook.md           # AI rules and guidelines
-│   └── Business_Goals.md             # Business goals reference
+│   ├── Plans/                        # AI-generated task plans
+│   ├── Done/                         # Completed tasks + posted content
+│   │   └── linkedin_posted/          # Published LinkedIn posts archive
+│   ├── Logs/                         # Daily activity logs (YYYY-MM-DD.md)
+│   └── LinkedIn_Posts/               # Queue for pending LinkedIn posts
 │
-├── drop_folder/                      # Drop task files here
-├── CLAUDE.md                         # Claude Code instructions
-├── LINKEDIN_SETUP.md                 # LinkedIn API setup guide
-├── .env                              # API credentials (never commit)
-└── README.md                         # This file
+├── Start_Dashboard.bat               # Start dashboard + all agents
+├── Start_Agents_Only.bat             # Start agents without dashboard
+├── build_exe.spec                    # PyInstaller build config
+├── installer.iss                     # Inno Setup installer config
+├── settings.json                     # App configuration
+├── CLAUDE.md                         # Claude Code agent instructions
+├── LINKEDIN_SETUP.md                 # LinkedIn OAuth setup guide
+└── .env                              # Credentials (gitignored)
 ```
 
 ---
 
 ## Tech Stack
 
-| Technology | Purpose |
-|------------|---------|
-| Claude Code (claude-sonnet-4-6) | AI reasoning engine — plans and executes tasks |
-| Obsidian Vault | Local file-based memory and dashboard |
-| Python 3.14 | Watcher scripts and automation |
-| Gmail API (OAuth2) | Email monitoring and sending |
-| LinkedIn API (UGC Posts) | Automated LinkedIn posting |
-| MCP Gmail Server | Model Context Protocol for email actions |
-| Watchdog (Python) | Filesystem event monitoring |
-| Windows Task Scheduler | Permanent scheduling |
+| Layer | Technology |
+|-------|-----------|
+| AI Brain | Claude API (`claude-sonnet-4-6`) |
+| Web Dashboard | Python · Flask · Jinja2 |
+| Email | IMAP (Gmail App Password) · SMTP |
+| LinkedIn | LinkedIn UGC API · OAuth 2.0 |
+| MCP Server | Gmail MCP (`skills/gmail_mcp_server.py`) |
+| Scheduling | Windows Task Scheduler · Python threading |
+| Packaging | PyInstaller · Inno Setup |
+| Storage | Local file system (Vault pattern) |
 
 ---
 
-## Installation & Setup
-
-### Hardware Requirements
-- **Minimum:** 8GB RAM, 4-core CPU, 20GB free disk space
-- **Recommended:** 16GB RAM, 8-core CPU, SSD storage
-- Stable internet connection (10+ Mbps)
+## Quick Start (Development)
 
 ### Prerequisites
 - Python 3.10+
-- Claude Code CLI installed and authenticated
-- Gmail API credentials (OAuth2)
-- LinkedIn Developer App + Access Token
-- Obsidian (optional, for visual vault browsing)
+- Gmail account with **App Password** enabled (2FA required)
+- LinkedIn account (OAuth handled by the app)
 
-### 1. Install Dependencies
+### Install
 ```bash
-pip install watchdog google-auth google-auth-oauthlib google-api-python-client requests anthropic
+git clone https://github.com/Hafiz54Kashif/AI-Employee-Silver-Tier.git
+cd AI-Employee-Silver-Tier
+pip install flask requests anthropic
 ```
 
-### 2. Configure Credentials
-Create `.env` file in project root:
+### Configure
+Create a `.env` file in the project root:
 ```
-LINKEDIN_ACCESS_TOKEN=your_linkedin_access_token
-ANTHROPIC_API_KEY=your_anthropic_api_key
+GMAIL_ADDRESS=your@gmail.com
+GMAIL_APP_PASSWORD=xxxx xxxx xxxx xxxx
+ANTHROPIC_API_KEY=sk-ant-...
 ```
 
-### 3. Start Watchers
+### Run
 ```bash
-# Gmail Watcher
-python watchers/gmail_watcher.py
-
-# Approval Watcher
-python watchers/approval_watcher.py
-
-# LinkedIn Watcher
-python watchers/linkedin_watcher.py
+python dashboard/app.py
 ```
-
-### 4. Setup Permanent Scheduling (Run as Administrator)
-```bash
-scripts/setup_scheduler.bat
-```
+Open `http://localhost:5000` — connect your LinkedIn account from the Accounts page.
 
 ---
 
-## How It Works — Demo Flows
+## How It Works — Core Flows
 
-### Flow 1: Email Processing
+### Flow 1: New Email → Auto-Reply
 ```
 Email arrives in Gmail
-    → gmail_watcher.py detects it (every 2 mins)
-    → Saved as vault/Needs_Action/email_XXXX.md
-    → Claude reads + generates vault/Plans/email_plan.md
-    → Reply drafted and sent via Gmail MCP
-    → Moved to vault/Done/
-    → Dashboard.md updated
+  → gmail_watcher.py detects it (every 2 mins via IMAP)
+  → Saved as vault/Needs_Action/email_XXXX.md
+  → Sensitive keyword? → vault/Pending_Approval/ (wait for human)
+  → Safe? → Reply drafted and sent via SMTP
+  → Moved to vault/Done/
+  → Logged in vault/Logs/YYYY-MM-DD.md
 ```
 
-### Flow 2: Sensitive Task (Human Approval)
+### Flow 2: LinkedIn Post at Scheduled Time
 ```
-Email with "payment" keyword arrives
-    → Sensitivity check triggers
-    → Moved to vault/Pending_Approval/
-    → Human reviews in Obsidian
-    → Moves file to vault/Approved/
-    → approval_watcher.py detects approval
-    → Claude executes the task
-    → Moved to vault/Done/
+9:00 AM (configurable)
+  → linkedin_scheduler.py fires
+  → Reads from scheduled posts queue
+  → Saves post to vault/LinkedIn_Posts/daily_post_YYYY-MM-DD.md
+  → linkedin_watcher.py detects file (polls every 30s)
+  → Published to LinkedIn via UGC API
+  → Moved to vault/Done/linkedin_posted/
 ```
 
-### Flow 3: Daily LinkedIn Post (9 AM)
+### Flow 3: Sensitive Email → Human Approval
 ```
-9:00 AM — Scheduler fires
-    → linkedin_content_generator.py runs
-    → Reads vault/Business_Goals.md
-    → Claude generates professional post
-    → Saved to vault/LinkedIn_Posts/daily_post_YYYY-MM-DD.md
-    → linkedin_watcher.py detects file (30 sec)
-    → Published to LinkedIn automatically
-    → Moved to vault/Done/linkedin_posted/
-    → Dashboard.md updated
+Email with "payment" keyword
+  → Moved to vault/Pending_Approval/
+  → Appears in Dashboard → Approvals tab
+  → Human clicks Approve or Reject
+  → approval_watcher.py picks up approved file
+  → Task executed → vault/Done/
 ```
 
 ---
 
-## Live Activity Log (Sample)
+## Security
 
-From `vault/Dashboard.md`:
-- 6 test emails processed and replied ✅
-- LinkedIn post published successfully ✅
-- Payment task flagged → human approved → executed ✅
-- 5 task files processed via drop_folder ✅
-- 20+ Plan.md files auto-generated ✅
-
----
-
-## Security Disclosure
-
-| Concern | How We Handle It |
-|---------|-----------------|
-| API Keys | Stored in `.env` file only — never hardcoded |
-| .gitignore | `.env` is in `.gitignore` — never committed to GitHub |
-| Sensitive Actions | 15+ keywords trigger HITL approval before any action |
-| Payments | Never auto-executed — always require human move to `/Approved` |
-| Audit Trail | Every action logged in `vault/Logs/YYYY-MM-DD.md` |
-| LinkedIn Token | Stored in `.env` only — not in vault or any tracked file |
-| Gmail OAuth | Credentials file excluded from version control |
-
-**The Human Remains Accountable:** All actions run under your credentials, on your machine, in your name.
+| Concern | How Handled |
+|---------|-------------|
+| API keys & passwords | Stored in `.env` only — gitignored, never committed |
+| LinkedIn credentials | OAuth token in `.env` — customer's own account |
+| Sensitive actions | 5+ keywords auto-flag for human review before any action |
+| Payments / legal | Never auto-executed — require explicit human approval |
+| Audit trail | Every action logged with timestamp in `vault/Logs/` |
+| Path traversal | All file operations use `Path(filename).name` safe sanitization |
 
 ---
 
 ## Agent Skills
 
-All AI functionality is implemented as Agent Skills in `skills/` folder:
-
-| Skill | Purpose | Tier |
-|-------|---------|------|
-| `process_tasks.md` | Process tasks from Needs_Action | Bronze |
-| `monitor_gmail.md` | Monitor Gmail for new emails | Bronze |
-| `human_approval.md` | Route sensitive tasks for approval | Silver |
-| `send_email.md` | Send emails via Gmail MCP | Silver |
-| `post_to_linkedin.md` | Post content to LinkedIn | Silver |
-| `schedule_tasks.md` | Manage scheduled tasks | Silver |
-| `ceo_briefing.md` | Generate Monday CEO Briefing | Silver+ |
-| `watchdog.md` | Monitor + restart watcher processes | Gold |
-| `post_to_facebook_instagram.md` | Post to Facebook & Instagram | Gold |
-| `post_to_twitter.md` | Post to Twitter (X) | Gold |
-| `odoo_accounting.md` | Odoo accounting via JSON-RPC MCP | Gold |
-| `ralph_wiggum.md` | Autonomous loop via Stop hook | Gold |
+| Skill | Purpose |
+|-------|---------|
+| `monitor_gmail.md` | Gmail monitoring workflow |
+| `human_approval.md` | Sensitivity check + approval routing |
+| `send_email.md` | Email sending via SMTP |
+| `post_to_linkedin.md` | LinkedIn UGC API posting |
+| `process_tasks.md` | Task processing loop |
+| `schedule_tasks.md` | Scheduling and time-based triggers |
+| `gmail_mcp_server.py` | Gmail MCP server for Claude Code integration |
 
 ---
 
-## Demo Video
+## Silver Tier Requirements ✅
 
-The demo video (5-10 minutes) covers:
-1. System overview and architecture walkthrough
-2. Live Gmail monitoring — email arrives → AI processes → reply sent
-3. Human-in-the-loop approval — sensitive task flagged → human approves → executed
-4. LinkedIn auto-posting — content generated → published automatically
-5. Dashboard.md and Logs live update demonstration
-6. Scheduling setup via Windows Task Scheduler
-
----
-
-## Judging Criteria Coverage
-
-| Criterion | Weight | How We Address It |
-|-----------|--------|-------------------|
-| Functionality | 30% | All 9 Silver requirements complete with live evidence |
-| Innovation | 25% | AI content generation, file-based HITL, 3-watcher perception layer |
-| Practicality | 20% | Gmail auto-reply + LinkedIn posting = real daily business value |
-| Security | 15% | .env credentials, .gitignore, HITL for all sensitive actions |
-| Documentation | 10% | This README + Plan.md for every task + activity logs |
-
----
-
-## Lessons Learned
-
-1. **File-based state is powerful** — Obsidian vault as both GUI and state machine eliminates need for a database
-2. **Stop hooks = true autonomy** — Without Ralph Wiggum, Claude stops after one task regardless of remaining work
-3. **HITL is non-negotiable for payments** — Never auto-approve financial actions; always require human file-move
-4. **Watchdog saves hours** — Watchers crash on network blips; process managers restart them silently
-5. **MCP servers are modular** — Each integration (Gmail, Odoo, Social) is fully independent and swappable
-6. **Test each watcher in isolation** — Complexity adds up fast; one broken watcher shouldn't kill the system
-7. **Log everything** — When Claude makes a wrong decision, vault/Logs/ is the only audit trail
+| Requirement | Implementation |
+|-------------|---------------|
+| 2+ watcher scripts | `gmail_watcher.py` + `linkedin_watcher.py` + `linkedin_scheduler.py` |
+| LinkedIn auto-post | Scheduled daily via `linkedin_scheduler.py` + `linkedin_watcher.py` |
+| Plan.md generation | Every email task generates a plan before execution |
+| One working MCP server | `skills/gmail_mcp_server.py` |
+| Human-in-the-loop | `Pending_Approval/` → Dashboard review → `approval_watcher.py` |
+| Basic scheduling | Daily 9 AM trigger · `scripts/setup_scheduler.bat` for Windows Task Scheduler |
 
 ---
 
 ## Author
 
-**Hackathon 0 — Personal AI Employee (Gold Tier)**
-Built with Claude Code + Obsidian + Python + MCP
-PIAIC — Agentic AI Batch
-
----
-
-*This AI Employee never sleeps, never forgets, and always logs its work.*
-
----
-
-*Gold Tier — 40+ hours | Claude Code + Python + Obsidian + Odoo + Meta API + Twitter API*
+Built for **Hackathon 0 — PIAIC Agentic AI Batch**
+Stack: Python · Flask · Claude API · IMAP · LinkedIn OAuth · PyInstaller
