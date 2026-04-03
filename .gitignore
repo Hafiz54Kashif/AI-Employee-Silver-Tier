@@ -1,0 +1,39 @@
+# Credentials & secrets
+.env
+credentials.json
+token.json
+dashboard/_app_secrets.py
+
+# Runtime state files
+last_uid.txt
+watcher.lock
+processed_emails.json
+
+# Personal vault data (logs, done emails, LinkedIn posts)
+vault/Logs/
+vault/Done/
+vault/LinkedIn_Posts/
+vault/Needs_Action/
+vault/Pending_Approval/
+vault/Approved/
+vault/Rejected/
+vault/Plans/
+
+# PyInstaller build artifacts
+build/
+dist/
+*.spec.bak
+
+# Installer output
+installer_output/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Obsidian app data
+.obsidian/
+
+# Claude session data
+.claude/

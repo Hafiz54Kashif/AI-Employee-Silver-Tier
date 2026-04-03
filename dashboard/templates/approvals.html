@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% block page_title %}Approvals{% endblock %}
+{% block page_sub %}Review and approve or reject flagged emails{% endblock %}
+
+{% block content %}
+
+{% if pending %}
+
+  <!-- Summary Banner -->
+  <div style="background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.3);
+              border-radius:12px; padding:14px 20px; margin-bottom:24px;
+              display:flex; align-items:center; gap:12px;">
+    <i class="fa-solid fa-triangle-exclamation" style="color:#fcd34d; font-size:20px;"></i>
+    <div>
+      <span style="color:#fcd34d; font-weight:700; font-size:15px;">
+        {{ pending | length }} Email{{ 's' if pending | length > 1 }} Awaiting Your Approval
+      </span>
+      <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">
+        Review each email below and Approve or Reject
+      </div>
+    </div>
+  </div>
+
+  {% for email in pending %}
+  <div class="section-card" style="border-left: 3px solid var(--warning); margin-bottom: 20px;">
+
+    <!-- Header -->
+    <div style="display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+      <div>
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+          <span style="background:linear-gradient(135deg, var(--warning), #f97316);
+                       color:#000; font-size:11px; font-weight:800; padding:3px 10px;
+                       border-radius:20px; white-space:nowrap;">
+            #{{ loop.index }} of {{ pending | length }}
+          </span>
+          <div style="font-size:16px; font-weight:700; color:#fff;">
+            📧 {{ email.subject or '(No Subject)' }}
+          </div>
+        </div>
+        <div style="font-size:13px; color:var(--text-muted); display:flex; flex-wrap:wrap; gap:16px;">
+          <span><i class="fa-solid fa-user" style="color:#63b3ed; margin-right:5px;"></i>{{ email.from_ or 'Unknown' }}</span>
+          <span><i class="fa-regular fa-clock" style="color:#a5b4fc; margin-right:5px;"></i>{{ email.received or '—' }}</span>
+        </div>
+      </div>
+      <span style="background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.3);
+                   color:#fcd34d; padding:4px 14px; border-radius:20px; font-size:12px; font-weight:600; white-space:nowrap;">
+        ⚠️ Awaiting Approval
+      </span>
+    </div>
+
+    <!-- Flagged Keywords -->
+    {% if email.flagged_keywords %}
+    <div style="margin-bottom:14px;">
+      <span style="font-size:11px; color:var(--text-muted); margin-right:8px;">Flagged because of:</span>
+      {% for kw in email.flagged_keywords %}
+        <span style="background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3);
+                     color:#fca5a5; padding:2px 10px; border-radius:20px; font-size:12px; margin:2px;">
+          {{ kw }}
+        </span>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Email Body -->
+    <div style="margin-bottom:18px;">
+      <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Email Content</div>
+      <div style="background:rgba(0,0,0,0.25); border:1px solid var(--border); border-radius:10px;
+                  padding:16px; font-size:13px; color:#e2e8f0; line-height:1.8;
+                  white-space:pre-wrap; max-height:200px; overflow-y:auto; word-break:break-word;">
+{{ email.body or '(No content)' }}
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div style="display:flex; gap:12px; flex-wrap:wrap;">
+
+      <!-- Approve -->
+      <form method="POST" action="{{ url_for('approve', filename=email.filename) }}" style="margin:0;">
+        <button type="submit"
+                style="display:flex; align-items:center; gap:8px; padding:11px 28px;
+                       background:linear-gradient(135deg, #059669, #10b981);
+                       border:none; border-radius:10px; color:#fff; font-size:14px;
+                       font-weight:700; cursor:pointer; transition:all 0.2s;"
+                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 25px rgba(16,185,129,0.35)'"
+                onmouseout="this.style.transform=''; this.style.boxShadow=''">
+          <i class="fa-solid fa-circle-check" style="font-size:16px;"></i>
+          Approve
+        </button>
+      </form>
+
+      <!-- Reject -->
+      <form method="POST" action="{{ url_for('reject', filename=email.filename) }}" style="margin:0;">
+        <button type="submit"
+                style="display:flex; align-items:center; gap:8px; padding:11px 28px;
+                       background:linear-gradient(135deg, #dc2626, #ef4444);
+                       border:none; border-radius:10px; color:#fff; font-size:14px;
+                       font-weight:700; cursor:pointer; transition:all 0.2s;"
+                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 25px rgba(239,68,68,0.35)'"
+                onmouseout="this.style.transform=''; this.style.boxShadow=''">
+          <i class="fa-solid fa-circle-xmark" style="font-size:16px;"></i>
+          Reject
+        </button>
+      </form>
+
+      <!-- View Full File -->
+      <button type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#raw-{{ loop.index }}"
+              style="display:flex; align-items:center; gap:8px; padding:11px 20px;
+                     background:rgba(255,255,255,0.06); border:1px solid var(--border);
+                     border-radius:10px; color:var(--text-muted); font-size:13px;
+                     cursor:pointer; transition:all 0.2s;"
+              onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.color='#fff'"
+              onmouseout="this.style.background='rgba(255,255,255,0.06)'; this.style.color='var(--text-muted)'">
+        <i class="fa-solid fa-file-lines"></i>
+        View Full File
+      </button>
+    </div>
+
+    <!-- Raw File Collapse -->
+    <div class="collapse" id="raw-{{ loop.index }}" style="margin-top:14px;">
+      <div style="background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:10px;
+                  padding:14px; font-size:12px; color:#94a3b8; font-family:monospace;
+                  white-space:pre-wrap; max-height:250px; overflow-y:auto; word-break:break-all;">
+{{ email.raw }}
+      </div>
+    </div>
+
+  </div>
+  {% endfor %}
+
+{% else %}
+  <!-- Empty State -->
+  <div class="section-card" style="text-align:center; padding:70px 20px;">
+    <div style="font-size:56px; margin-bottom:16px;">✅</div>
+    <div style="font-size:20px; font-weight:700; color:#fff; margin-bottom:8px;">All Clear!</div>
+    <div style="font-size:14px; color:var(--text-muted);">No emails waiting for your approval right now.</div>
+    <div style="font-size:13px; color:var(--text-muted); margin-top:8px;">
+      Sensitive emails (payment, password, bank etc.) will appear here automatically.
+    </div>
+  </div>
+{% endif %}
+
+{% endblock %}

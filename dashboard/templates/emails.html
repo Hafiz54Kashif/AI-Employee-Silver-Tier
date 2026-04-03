@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block page_title %}Email Settings{% endblock %}
+{% block page_sub %}Control how your AI Employee handles emails{% endblock %}
+
+{% block content %}
+
+<!-- Sensitive Keywords -->
+<div class="section-card">
+  <div class="section-title">
+    <i class="fa-solid fa-shield-halved" style="color:#fca5a5"></i> &nbsp;Sensitive Keywords
+  </div>
+  <div class="section-sub">
+    If any of these words appear in an email, AI will NOT auto-reply — it will ask YOU first.
+  </div>
+
+  <!-- Current Keywords -->
+  <div class="mb-4" id="keywords-container">
+    {% if settings.email.sensitive_keywords %}
+      {% for kw in settings.email.sensitive_keywords %}
+        <span class="keyword-tag">
+          {{ kw }}
+          <form method="POST" style="display:inline; margin:0;">
+            <input type="hidden" name="action" value="remove_keyword"/>
+            <input type="hidden" name="keyword" value="{{ kw }}"/>
+            <button type="submit" title="Remove">✕</button>
+          </form>
+        </span>
+      {% endfor %}
+    {% else %}
+      <p style="color:var(--text-muted); font-size:14px;">No keywords added yet.</p>
+    {% endif %}
+  </div>
+
+  <!-- Add Keyword -->
+  <form method="POST" class="d-flex gap-2" style="max-width:420px;">
+    <input type="hidden" name="action" value="add_keyword"/>
+    <input type="text" name="keyword" class="form-control" placeholder="Type keyword e.g. refund, contract..." required/>
+    <button type="submit" class="btn btn-primary-grad" style="white-space:nowrap;">
+      <i class="fa-solid fa-plus"></i> &nbsp;Add
+    </button>
+  </form>
+</div>
+
+<!-- Email Behaviour -->
+<div class="section-card">
+  <div class="section-title">
+    <i class="fa-solid fa-sliders" style="color:#63b3ed"></i> &nbsp;Email Behaviour
+  </div>
+  <div class="section-sub">Customize how AI replies to your emails</div>
+
+  <form method="POST">
+    <input type="hidden" name="action" value="save_settings"/>
+
+    <!-- Auto Reply Toggle -->
+    <div class="d-flex align-items-center justify-content-between mb-4 p-3"
+         style="background:rgba(255,255,255,0.04); border-radius:10px; border:1px solid var(--border);">
+      <div>
+        <div style="font-weight:600; font-size:14px;">Auto Reply</div>
+        <div style="font-size:12px; color:var(--text-muted);">AI automatically replies to new emails</div>
+      </div>
+      <div class="form-check form-switch mb-0">
+        <input class="form-check-input" type="checkbox" name="auto_reply" id="autoReply" style="width:44px; height:22px;"
+               {% if settings.email.auto_reply %}checked{% endif %}>
+      </div>
+    </div>
+
+    <!-- Check Interval -->
+    <div class="mb-4">
+      <label class="form-label" style="font-size:14px; font-weight:600;">
+        Check Emails Every
+        <span style="color:var(--text-muted); font-weight:400;">(minutes)</span>
+      </label>
+      <div class="d-flex align-items-center gap-3">
+        <input type="range" class="form-range flex-grow-1" name="check_interval"
+               min="1" max="60" value="{{ settings.email.check_interval_minutes }}"
+               oninput="document.getElementById('intervalVal').textContent = this.value + ' min'"
+               style="accent-color: var(--primary);">
+        <span id="intervalVal" style="font-weight:700; color:#fff; min-width:55px; font-size:15px;">
+          {{ settings.email.check_interval_minutes }} min
+        </span>
+      </div>
+    </div>
+
+    <!-- Reply Tone -->
+    <div class="mb-4">
+      <label class="form-label" style="font-size:14px; font-weight:600;">Reply Tone</label>
+      <div class="row g-2" style="max-width:500px;">
+        {% for tone in ['Professional', 'Friendly', 'Formal'] %}
+        <div class="col-4 tone-option">
+          <input type="radio" name="reply_tone" id="tone_{{ tone }}" value="{{ tone }}"
+                 {% if settings.email.reply_tone == tone %}checked{% endif %}>
+          <label for="tone_{{ tone }}">{{ tone }}</label>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary-grad">
+      <i class="fa-solid fa-floppy-disk"></i> &nbsp;Save Changes
+    </button>
+  </form>
+</div>
+
+{% endblock %}

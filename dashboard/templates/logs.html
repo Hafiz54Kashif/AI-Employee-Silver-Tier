@@ -1,0 +1,347 @@
+{% extends "base.html" %}
+{% block page_title %}Activity Logs{% endblock %}
+{% block page_sub %}Complete history of all actions — click any entry for details{% endblock %}
+
+{% block content %}
+
+<div class="section-card">
+  <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:6px;">
+    <div class="section-title" style="margin:0;">
+      <i class="fa-solid fa-list-check" style="color:#a5b4fc"></i> &nbsp;All Activity
+    </div>
+    <div style="display:flex; align-items:center; gap:10px;">
+      {% if ralph_count > 0 %}
+        <span style="font-size:12px; color:var(--text-muted);">
+          {{ ralph_count }} system entries hidden
+        </span>
+        <a href="?show_all={% if show_all %}0{% else %}1{% endif %}"
+           style="font-size:12px; padding:5px 14px; border-radius:20px;
+                  background:rgba(255,255,255,0.06); border:1px solid var(--border);
+                  color:var(--text-muted); text-decoration:none;">
+          {% if show_all %}Hide System{% else %}Show All{% endif %}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+  <div class="section-sub">Click on any activity to see full details</div>
+
+  {% if logs %}
+    <div class="card" style="border-radius:10px; overflow:hidden;">
+      {% for log in logs %}
+        {% set entry = log.entry | string %}
+
+        {% if 'ERROR' in entry or 'FAIL' in entry %}
+          {% set dot_color = 'var(--danger)' %}
+          {% set badge_color = 'rgba(239,68,68,0.15)' %}
+          {% set badge_text = '#fca5a5' %}
+          {% set status_label = 'Error' %}
+        {% elif 'POSTED' in entry or 'Done' in entry or 'complete' in entry or 'completed' in entry or 'SENT' in entry %}
+          {% set dot_color = 'var(--success)' %}
+          {% set badge_color = 'rgba(16,185,129,0.15)' %}
+          {% set badge_text = '#6ee7b7' %}
+          {% set status_label = 'Success' %}
+        {% elif 'PENDING' in entry or 'Approval' in entry or 'flagged' in entry %}
+          {% set dot_color = 'var(--warning)' %}
+          {% set badge_color = 'rgba(245,158,11,0.15)' %}
+          {% set badge_text = '#fcd34d' %}
+          {% set status_label = 'Pending' %}
+        {% else %}
+          {% set dot_color = 'var(--primary)' %}
+          {% set badge_color = 'rgba(124,58,237,0.15)' %}
+          {% set badge_text = '#c4b5fd' %}
+          {% set status_label = 'Info' %}
+        {% endif %}
+
+        <div class="log-entry log-clickable"
+             data-bs-toggle="modal"
+             data-bs-target="#logModal"
+             data-idx="{{ loop.index0 }}"
+             data-dot="{{ dot_color }}"
+             style="cursor:pointer; transition: background 0.15s;">
+          <div class="log-dot" style="background:{{ dot_color }}"></div>
+          <div class="flex-grow-1">
+            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px;">
+              <span style="font-size:13px; color:var(--text);">{{ entry }}</span>
+              <span style="font-size:11px; padding:2px 10px; border-radius:20px;
+                           background:{{ badge_color }}; color:{{ badge_text }}; white-space:nowrap;">
+                {{ status_label }}
+              </span>
+            </div>
+            <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">
+              {% if log.time %}
+                <i class="fa-regular fa-clock" style="margin-right:4px;"></i>
+                <strong style="color:#cbd5e1;">{{ log.time }}</strong> &nbsp;·&nbsp;
+              {% endif %}
+              <i class="fa-regular fa-calendar" style="margin-right:4px;"></i>{{ log.date }}
+            </div>
+          </div>
+        </div>
+
+      {% endfor %}
+    </div>
+  {% else %}
+    <div style="text-align:center; padding:60px; color:var(--text-muted);">
+      <i class="fa-solid fa-inbox" style="font-size:40px; display:block; margin-bottom:12px; opacity:0.3"></i>
+      No logs yet. Agent will log activity here automatically.
+    </div>
+  {% endif %}
+</div>
+
+<!-- ── Detail Modal ── -->
+<div class="modal fade" id="logModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="background:#1a1a2e; border:1px solid rgba(255,255,255,0.1); border-radius:16px;">
+
+      <div class="modal-header" style="border-bottom:1px solid rgba(255,255,255,0.08); padding:20px 24px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div id="modal-dot" style="width:10px; height:10px; border-radius:50%; background:var(--primary);"></div>
+          <h5 class="modal-title" style="color:#fff; font-size:16px; font-weight:700; margin:0;">Activity Detail</h5>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                style="filter:invert(1); opacity:0.6;"></button>
+      </div>
+
+      <div class="modal-body" style="padding:24px;">
+
+        <!-- Date -->
+        <div style="margin-bottom:16px;">
+          <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Date</div>
+          <div id="modal-date" style="font-size:14px; color:#fff; font-weight:600;"></div>
+        </div>
+
+        <!-- Status -->
+        <div style="margin-bottom:16px;">
+          <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Status</div>
+          <div id="modal-status-badge" style="display:inline-block; font-size:13px; padding:4px 14px; border-radius:20px; font-weight:600;"></div>
+        </div>
+
+        <!-- Full Entry -->
+        <div style="margin-bottom:16px;">
+          <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Full Log Entry</div>
+          <div id="modal-entry"
+               style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.08);
+                      border-radius:10px; padding:14px; font-size:13px; color:#e2e8f0;
+                      font-family: 'Courier New', monospace; line-height:1.7; word-break:break-word;"></div>
+        </div>
+
+        <!-- Parsed Parts -->
+        <div id="modal-parts-container">
+          <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Breakdown</div>
+          <div id="modal-parts" style="display:flex; flex-direction:column; gap:6px;"></div>
+        </div>
+
+        <!-- Email Detail Section -->
+        <div id="modal-email-container" style="display:none; margin-top:16px;">
+          <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px;">
+            <i class="fa-solid fa-envelope" style="color:#63b3ed"></i> &nbsp;Email Details
+          </div>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <div style="display:flex; gap:10px;">
+              <span style="font-size:11px; color:var(--text-muted); min-width:80px; padding-top:3px; font-weight:600;">From</span>
+              <span id="email-from" style="font-size:13px; color:#e2e8f0;"></span>
+            </div>
+            <div style="display:flex; gap:10px;">
+              <span style="font-size:11px; color:var(--text-muted); min-width:80px; padding-top:3px; font-weight:600;">Subject</span>
+              <span id="email-subject" style="font-size:13px; color:#e2e8f0; font-weight:600;"></span>
+            </div>
+            <div style="display:flex; gap:10px;">
+              <span style="font-size:11px; color:var(--text-muted); min-width:80px; padding-top:3px; font-weight:600;">Received</span>
+              <span id="email-received" style="font-size:13px; color:#e2e8f0;"></span>
+            </div>
+            <div>
+              <div style="font-size:11px; color:var(--text-muted); font-weight:600; margin-bottom:6px;">Email Body</div>
+              <div id="email-body"
+                   style="background:rgba(99,179,237,0.05); border:1px solid rgba(99,179,237,0.2);
+                          border-radius:8px; padding:12px; font-size:13px; color:#e2e8f0;
+                          line-height:1.7; white-space:pre-wrap; max-height:150px; overflow-y:auto;">
+              </div>
+            </div>
+            <div id="email-reply-section" style="display:none;">
+              <div style="font-size:11px; color:var(--text-muted); font-weight:600; margin-bottom:6px;">
+                <i class="fa-solid fa-reply" style="color:#6ee7b7"></i> &nbsp;AI Reply Sent
+              </div>
+              <div id="email-reply"
+                   style="background:rgba(16,185,129,0.05); border:1px solid rgba(16,185,129,0.2);
+                          border-radius:8px; padding:12px; font-size:13px; color:#e2e8f0;
+                          line-height:1.7; white-space:pre-wrap; max-height:150px; overflow-y:auto;">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LinkedIn Post Content -->
+        <div id="modal-post-container" style="display:none; margin-top:16px;">
+          <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">
+            <i class="fa-brands fa-linkedin" style="color:#67e8f9"></i> &nbsp;Post Content (Jo LinkedIn Pe Gaya)
+          </div>
+          <div id="modal-post-content"
+               style="background:rgba(6,182,212,0.05); border:1px solid rgba(6,182,212,0.2);
+                      border-radius:10px; padding:16px; font-size:13px; color:#e2e8f0;
+                      line-height:1.8; white-space:pre-wrap; word-break:break-word; max-height:250px; overflow-y:auto;">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer" style="border-top:1px solid rgba(255,255,255,0.08); padding:16px 24px;">
+        <button type="button" class="btn btn-primary-grad btn-sm" data-bs-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<style>
+  .log-clickable:hover { background: rgba(124,58,237,0.08) !important; }
+</style>
+
+<script>
+// All log data stored safely in JS — no HTML escaping issues
+const LOG_DATA = {{ logs | tojson }};
+</script>
+
+<script>
+const logModal = document.getElementById('logModal');
+logModal.addEventListener('show.bs.modal', function (event) {
+  const row   = event.relatedTarget;
+  const idx   = parseInt(row.getAttribute('data-idx'));
+  const dot   = row.getAttribute('data-dot');
+  const log   = LOG_DATA[idx] || {};
+
+  const entry   = log.entry   || '';
+  const date    = log.date    || '';
+  const time    = log.time    || '';
+  const details = log.details || [];
+
+  // Determine status
+  let status = 'Info';
+  if (entry.includes('ERROR') || entry.includes('FAIL'))                              status = 'Error';
+  else if (entry.includes('POSTED') || entry.includes('SENT') ||
+           entry.includes('complete') || entry.includes('Done'))                      status = 'Success';
+  else if (entry.includes('PENDING') || entry.includes('Approval'))                   status = 'Pending';
+
+  // Dot color
+  document.getElementById('modal-dot').style.background = dot;
+
+  // Date + Time
+  const dateEl = document.getElementById('modal-date');
+  dateEl.textContent = date + (time ? '  ·  ' + time : '');
+
+  // Status badge
+  const badgeEl = document.getElementById('modal-status-badge');
+  const colors = {
+    'Success': { bg: 'rgba(16,185,129,0.15)', color: '#6ee7b7' },
+    'Error':   { bg: 'rgba(239,68,68,0.15)',  color: '#fca5a5' },
+    'Pending': { bg: 'rgba(245,158,11,0.15)', color: '#fcd34d' },
+    'Info':    { bg: 'rgba(124,58,237,0.15)', color: '#c4b5fd' },
+  };
+  const c = colors[status] || colors['Info'];
+  badgeEl.style.background = c.bg;
+  badgeEl.style.color = c.color;
+  badgeEl.textContent = status;
+
+  // Full entry
+  document.getElementById('modal-entry').textContent = entry;
+
+  // Breakdown
+  const partsEl = document.getElementById('modal-parts');
+  partsEl.innerHTML = '';
+
+  if (details.length > 0) {
+    // Old format — show detail bullets
+    details.forEach(detail => {
+      const [label, ...rest] = detail.split(':');
+      const div = document.createElement('div');
+      div.style.cssText = 'display:flex; gap:10px; align-items:flex-start; margin-bottom:4px;';
+      div.innerHTML = `
+        <span style="font-size:11px; color:var(--text-muted); min-width:130px; padding-top:3px; font-weight:600;">
+          ${label.trim()}
+        </span>
+        <span style="font-size:13px; color:#e2e8f0; flex:1; word-break:break-word;">
+          ${rest.join(':').trim()}
+        </span>`;
+      partsEl.appendChild(div);
+    });
+    document.getElementById('modal-parts-container').style.display = 'block';
+  } else {
+    // New format — split by |
+    const parts = entry.split('|').map(p => p.trim()).filter(p => p);
+    const labels = ['Source', 'Module', 'Action', 'File', 'ID'];
+    parts.forEach((part, i) => {
+      const div = document.createElement('div');
+      div.style.cssText = 'display:flex; gap:10px; align-items:flex-start; margin-bottom:4px;';
+      div.innerHTML = `
+        <span style="font-size:11px; color:var(--text-muted); min-width:80px; padding-top:3px;">
+          ${labels[i] || 'Part ' + (i+1)}
+        </span>
+        <span style="font-size:13px; color:#e2e8f0; background:rgba(0,0,0,0.2);
+                     padding:3px 10px; border-radius:6px; flex:1; word-break:break-all;">
+          ${part}
+        </span>`;
+      partsEl.appendChild(div);
+    });
+    document.getElementById('modal-parts-container').style.display = parts.length > 1 ? 'block' : 'none';
+  }
+
+  // Email detail fetch
+  const emailContainer = document.getElementById('modal-email-container');
+  emailContainer.style.display = 'none';
+
+  // Find task filename from details or entry
+  let taskFilename = null;
+  if (details.length > 0) {
+    details.forEach(d => {
+      if (d.toLowerCase().startsWith('task:')) {
+        taskFilename = d.split(':').slice(1).join(':').trim();
+      }
+    });
+  }
+  // Also check entry for email filename pattern
+  const emailMatch = entry.match(/(email_[\w]+\.md)/);
+  if (emailMatch) taskFilename = emailMatch[1];
+
+  if (taskFilename && taskFilename.startsWith('email_')) {
+    fetch(`/email_detail/${encodeURIComponent(taskFilename)}`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.found) {
+          document.getElementById('email-from').textContent     = data.from_    || '—';
+          document.getElementById('email-subject').textContent  = data.subject  || '—';
+          document.getElementById('email-received').textContent = data.received || '—';
+          document.getElementById('email-body').textContent     = data.body     || '(empty)';
+          const replySection = document.getElementById('email-reply-section');
+          if (data.reply) {
+            document.getElementById('email-reply').textContent = data.reply;
+            replySection.style.display = 'block';
+          } else {
+            replySection.style.display = 'none';
+          }
+          emailContainer.style.display = 'block';
+        }
+      })
+      .catch(() => {});
+  }
+
+  // LinkedIn post content
+  const postContainer = document.getElementById('modal-post-container');
+  const postContentEl = document.getElementById('modal-post-content');
+  postContainer.style.display = 'none';
+  postContentEl.textContent = '';
+
+  const linkedinMatch = entry.match(/LinkedIn \| POSTED \| ([^\|]+)/);
+  if (linkedinMatch) {
+    const filename = linkedinMatch[1].trim();
+    fetch(`/post_content/${encodeURIComponent(filename)}`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.found && data.content) {
+          postContentEl.textContent = data.content;
+          postContainer.style.display = 'block';
+        }
+      })
+      .catch(() => {});
+  }
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block page_title %}Settings{% endblock %}
+{% block page_sub %}Manage your AI Employee configuration{% endblock %}
+
+{% block content %}
+
+<div class="section-card">
+  <div class="section-title">
+    <i class="fa-solid fa-building" style="color:#fcd34d"></i> &nbsp;Business Profile
+  </div>
+  <div class="section-sub">This name appears in your dashboard header</div>
+
+  <form method="POST" style="max-width:400px;">
+    <div class="mb-3">
+      <label class="form-label" style="font-size:14px; font-weight:600;">Business Name</label>
+      <input type="text" name="client_name" class="form-control"
+             value="{{ settings.get('client_name', 'My Business') }}"
+             placeholder="e.g. Ahmad's Consulting"/>
+    </div>
+    <button type="submit" class="btn btn-primary-grad">
+      <i class="fa-solid fa-floppy-disk"></i> &nbsp;Save
+    </button>
+  </form>
+</div>
+
+<div class="section-card">
+  <div class="section-title">
+    <i class="fa-solid fa-circle-info" style="color:#67e8f9"></i> &nbsp;System Info
+  </div>
+  <div class="section-sub">Current system status</div>
+  <div style="font-size:14px; line-height:2.4; color:var(--text-muted);">
+    <div>Agent Status: &nbsp;<strong style="color:#fff">{{ settings.get('agent', {}).get('status', 'running') | upper }}</strong></div>
+    <div>Email Check Interval: &nbsp;<strong style="color:#fff">{{ settings.email.check_interval_minutes }} minutes</strong></div>
+    <div>LinkedIn Post Time: &nbsp;<strong style="color:#fff">{{ settings.linkedin.post_time }}</strong></div>
+    <div>Total Keywords: &nbsp;<strong style="color:#fff">{{ settings.email.sensitive_keywords | length }}</strong></div>
+    <div>Total Topics: &nbsp;<strong style="color:#fff">{{ settings.linkedin.topics | length }}</strong></div>
+  </div>
+</div>
+
+{% endblock %}

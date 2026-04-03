@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% block page_title %}LinkedIn Settings{% endblock %}
+{% block page_sub %}Control your LinkedIn auto-posting schedule and topics{% endblock %}
+
+{% block content %}
+
+<!-- Post Topics -->
+<div class="section-card">
+  <div class="section-title">
+    <i class="fa-brands fa-linkedin" style="color:#67e8f9"></i> &nbsp;Post Topics
+  </div>
+  <div class="section-sub">
+    AI will rotate through these topics when creating your daily LinkedIn posts.
+  </div>
+
+  <!-- Topics List -->
+  <div class="mb-4">
+    {% if settings.linkedin.topics %}
+      {% for topic in settings.linkedin.topics %}
+        <span class="topic-tag">
+          {{ topic }}
+          <form method="POST" style="display:inline; margin:0;">
+            <input type="hidden" name="action" value="remove_topic"/>
+            <input type="hidden" name="topic" value="{{ topic }}"/>
+            <button type="submit" title="Remove">✕</button>
+          </form>
+        </span>
+      {% endfor %}
+    {% else %}
+      <p style="color:var(--text-muted); font-size:14px;">No topics added yet.</p>
+    {% endif %}
+  </div>
+
+  <!-- Add Topic -->
+  <form method="POST" class="d-flex gap-2" style="max-width:520px;">
+    <input type="hidden" name="action" value="add_topic"/>
+    <input type="text" name="topic" class="form-control"
+           placeholder="e.g. how AI helps small businesses save time..." required/>
+    <button type="submit" class="btn btn-primary-grad" style="white-space:nowrap;">
+      <i class="fa-solid fa-plus"></i> &nbsp;Add
+    </button>
+  </form>
+</div>
+
+<!-- Post Schedule -->
+<div class="section-card">
+  <div class="section-title">
+    <i class="fa-solid fa-calendar-clock" style="color:#c084fc"></i> &nbsp;Post Schedule
+  </div>
+  <div class="section-sub">Set the time your AI Employee publishes to LinkedIn every day</div>
+
+  <form method="POST">
+    <input type="hidden" name="action" value="save_settings"/>
+
+    <!-- Auto Post Toggle -->
+    <div class="d-flex align-items-center justify-content-between mb-4 p-3"
+         style="background:rgba(255,255,255,0.04); border-radius:10px; border:1px solid var(--border);">
+      <div>
+        <div style="font-weight:600; font-size:14px;">Auto Post to LinkedIn</div>
+        <div style="font-size:12px; color:var(--text-muted);">AI posts daily content automatically</div>
+      </div>
+      <div class="form-check form-switch mb-0">
+        <input class="form-check-input" type="checkbox" name="auto_post" id="autoPost" style="width:44px; height:22px;"
+               {% if settings.linkedin.auto_post %}checked{% endif %}>
+      </div>
+    </div>
+
+    <!-- Post Time -->
+    <div class="mb-4">
+      <label class="form-label" style="font-size:14px; font-weight:600;">
+        Daily Post Time
+      </label>
+      <div style="max-width:220px;">
+        <input type="time" name="post_time" class="form-control"
+               value="{{ settings.linkedin.post_time }}"
+               style="font-size:18px; font-weight:700; padding:12px; color:#fff;"/>
+      </div>
+      <div style="font-size:12px; color:var(--text-muted); margin-top:8px;">
+        <i class="fa-solid fa-circle-info"></i>
+        Change takes effect after restarting the LinkedIn scheduler
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary-grad">
+      <i class="fa-solid fa-floppy-disk"></i> &nbsp;Save Changes
+    </button>
+  </form>
+</div>
+
+<!-- Schedule Posts -->
+<div class="section-card" style="margin-top:20px;">
+  <div class="section-title">
+    <i class="fa-solid fa-calendar-plus" style="color:#a78bfa;"></i> &nbsp;Schedule LinkedIn Posts
+  </div>
+  <div class="section-sub">
+    Apni posts yahan schedule karo — agent daily automatically publish kar dega.
+  </div>
+
+  <!-- Add New Post -->
+  <form method="POST" style="margin-bottom:24px;">
+    <input type="hidden" name="action" value="add_post"/>
+    <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end;">
+      <div>
+        <label style="font-size:12px; color:var(--text-muted); display:block; margin-bottom:6px;">Date</label>
+        <input type="date" name="post_date" class="form-control" style="width:180px;" required/>
+      </div>
+      <div style="flex:1; min-width:280px;">
+        <label style="font-size:12px; color:var(--text-muted); display:block; margin-bottom:6px;">Post Content</label>
+        <textarea name="post_content" class="form-control" rows="3"
+                  placeholder="Apni LinkedIn post yahan likho..." required
+                  style="resize:vertical;"></textarea>
+      </div>
+      <button type="submit"
+              style="display:inline-flex; align-items:center; gap:8px; padding:12px 22px;
+                     background:linear-gradient(135deg,var(--primary),var(--accent));
+                     border:none; border-radius:10px; color:#fff; font-weight:700;
+                     font-size:14px; cursor:pointer; transition:all 0.2s; height:fit-content;"
+              onmouseover="this.style.transform='translateY(-2px)'"
+              onmouseout="this.style.transform=''">
+        <i class="fa-solid fa-calendar-plus"></i> Schedule
+      </button>
+    </div>
+  </form>
+
+  <!-- Scheduled Posts List -->
+  {% set scheduled = scheduled_posts %}
+  {% if scheduled %}
+  <div style="font-size:13px; font-weight:700; color:#fff; margin-bottom:12px;">
+    Scheduled Posts ({{ scheduled | length }})
+  </div>
+  <div style="display:flex; flex-direction:column; gap:10px;">
+    {% for date, content in scheduled | dictsort %}
+    <div style="background:rgba(124,58,237,0.08); border:1px solid rgba(124,58,237,0.25);
+                border-radius:10px; padding:14px 16px; display:flex; gap:12px; align-items:flex-start;">
+      <div style="min-width:100px; font-size:13px; font-weight:700; color:#c4b5fd;">{{ date }}</div>
+      <div style="flex:1; font-size:13px; color:var(--text-muted); line-height:1.6;">
+        {{ content[:150] }}{% if content|length > 150 %}...{% endif %}
+      </div>
+      <form method="POST" style="margin:0;" onsubmit="return confirm('Delete this post?')">
+        <input type="hidden" name="action" value="delete_post"/>
+        <input type="hidden" name="post_date" value="{{ date }}"/>
+        <button type="submit"
+                style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3);
+                       color:#fca5a5; padding:6px 12px; border-radius:8px; cursor:pointer;
+                       font-size:12px; transition:all 0.2s;"
+                onmouseover="this.style.background='rgba(239,68,68,0.2)'"
+                onmouseout="this.style.background='rgba(239,68,68,0.1)'">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      </form>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div style="font-size:13px; color:var(--text-muted); padding:20px; text-align:center;
+              border:1px dashed var(--border); border-radius:10px;">
+    <i class="fa-solid fa-calendar" style="font-size:24px; margin-bottom:8px; display:block; color:#4b5563;"></i>
+    Koi post scheduled nahi — upar form se add karo
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}

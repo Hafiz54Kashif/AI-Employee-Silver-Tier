@@ -1,0 +1,33 @@
+{
+  "client_name": "My Business",
+  "email": {
+    "auto_reply": true,
+    "check_interval_minutes": 2,
+    "reply_tone": "Professional",
+    "sensitive_keywords": [
+      "payment",
+      "password",
+      "bank",
+      "invoice",
+      "urgent",
+      "wire transfer",
+      "account number"
+    ]
+  },
+  "linkedin": {
+    "auto_post": true,
+    "post_time": "09:00",
+    "topics": [
+      "AI automation for business",
+      "productivity tips for entrepreneurs",
+      "how AI is changing small businesses",
+      "customer success stories",
+      "future of work and AI",
+      "business growth strategies",
+      "agentic AI in 2026"
+    ]
+  },
+  "agent": {
+    "status": "running"
+  }
+}

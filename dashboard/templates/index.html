@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block page_title %}Dashboard{% endblock %}
+{% block page_sub %}Welcome back — your AI Employee is working for you{% endblock %}
+
+{% block content %}
+
+<!-- Stat Cards -->
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="icon icon-green"><i class="fa-solid fa-check"></i></div>
+      <div class="stat-value">{{ done }}</div>
+      <div class="stat-label">Emails Handled</div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="icon icon-orange"><i class="fa-solid fa-clock"></i></div>
+      <div class="stat-value">{{ pending }}</div>
+      <div class="stat-label">Pending Tasks</div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="icon icon-purple"><i class="fa-solid fa-user-check"></i></div>
+      <div class="stat-value">{{ approval }}</div>
+      <div class="stat-label">Awaiting Approval</div>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Info Row -->
+<div class="row g-3 mb-4">
+  <div class="col-md-6">
+    <div class="section-card h-100">
+      <div class="section-title"><i class="fa-solid fa-envelope" style="color:#63b3ed"></i> &nbsp;Email Agent</div>
+      <div class="section-sub">Current email configuration</div>
+      <div style="font-size:14px; line-height:2.2;">
+        <div>
+          <span style="color:var(--text-muted)">Auto Reply:</span> &nbsp;
+          {% if settings.email.auto_reply %}
+            <span style="color:#6ee7b7; font-weight:600">ON</span>
+          {% else %}
+            <span style="color:#fca5a5; font-weight:600">OFF</span>
+          {% endif %}
+        </div>
+        <div>
+          <span style="color:var(--text-muted)">Check Every:</span> &nbsp;
+          <span style="font-weight:600">{{ settings.email.check_interval_minutes }} minutes</span>
+        </div>
+        <div>
+          <span style="color:var(--text-muted)">Reply Tone:</span> &nbsp;
+          <span style="font-weight:600">{{ settings.email.reply_tone }}</span>
+        </div>
+        <div>
+          <span style="color:var(--text-muted)">Keywords:</span> &nbsp;
+          <span style="font-weight:600">{{ settings.email.sensitive_keywords | length }} active</span>
+        </div>
+      </div>
+      <a href="{{ url_for('emails') }}" class="btn btn-primary-grad mt-3" style="font-size:13px; padding:8px 16px;">
+        <i class="fa-solid fa-pen"></i> &nbsp;Edit Settings
+      </a>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="section-card h-100">
+      <div class="section-title"><i class="fa-brands fa-linkedin" style="color:#67e8f9"></i> &nbsp;LinkedIn Agent</div>
+      <div class="section-sub">Current LinkedIn configuration</div>
+      <div style="font-size:14px; line-height:2.2;">
+        <div>
+          <span style="color:var(--text-muted)">Auto Post:</span> &nbsp;
+          {% if settings.linkedin.auto_post %}
+            <span style="color:#6ee7b7; font-weight:600">ON</span>
+          {% else %}
+            <span style="color:#fca5a5; font-weight:600">OFF</span>
+          {% endif %}
+        </div>
+        <div>
+          <span style="color:var(--text-muted)">Post Time:</span> &nbsp;
+          <span style="font-weight:600">{{ settings.linkedin.post_time }}</span>
+        </div>
+        <div>
+          <span style="color:var(--text-muted)">Topics:</span> &nbsp;
+          <span style="font-weight:600">{{ settings.linkedin.topics | length }} topics</span>
+        </div>
+      </div>
+      <a href="{{ url_for('linkedin') }}" class="btn btn-primary-grad mt-3" style="font-size:13px; padding:8px 16px;">
+        <i class="fa-solid fa-pen"></i> &nbsp;Edit Settings
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="section-card">
+  <div class="section-title"><i class="fa-solid fa-bolt" style="color:#fcd34d"></i> &nbsp;Recent Activity</div>
+  <div class="section-sub">Last actions taken by your AI Employee</div>
+  {% if logs %}
+    <div class="card" style="border-radius:10px; overflow:hidden;">
+      {% for log in logs %}
+        <div class="log-entry">
+          <div class="log-dot"></div>
+          <div>{{ log }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div style="text-align:center; padding:40px; color:var(--text-muted); font-size:14px;">
+      <i class="fa-solid fa-inbox" style="font-size:32px; margin-bottom:10px; display:block; opacity:0.4"></i>
+      No recent activity yet. Agent is monitoring...
+    </div>
+  {% endif %}
+  <a href="{{ url_for('logs') }}" style="font-size:13px; color:var(--text-muted); text-decoration:none; display:block; margin-top:14px;">
+    View all logs <i class="fa-solid fa-arrow-right"></i>
+  </a>
+</div>
+
+{% endblock %}

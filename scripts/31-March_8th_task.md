@@ -1,0 +1,1 @@
+Write a story on friend ship.30 words.
