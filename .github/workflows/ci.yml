@@ -1,0 +1,45 @@
+name: CI — Syntax Check
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    name: Validate Python Files
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install flask requests
+
+      - name: Check Python syntax (watchers)
+        run: |
+          python -m py_compile watchers/gmail_watcher.py
+          python -m py_compile watchers/linkedin_watcher.py
+          python -m py_compile watchers/linkedin_scheduler.py
+          python -m py_compile watchers/linkedin_content_generator.py
+          python -m py_compile watchers/approval_watcher.py
+          python -m py_compile watchers/watchdog.py
+          echo "All watcher files: OK"
+
+      - name: Check Python syntax (dashboard)
+        run: |
+          python -m py_compile dashboard/app.py
+          echo "Dashboard: OK"
+
+      - name: Check Python syntax (scripts)
+        run: |
+          python -m py_compile scripts/task_processor.py
+          python -m py_compile scripts/logging_utils.py
+          echo "Scripts: OK"
