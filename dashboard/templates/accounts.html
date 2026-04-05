@@ -116,21 +116,21 @@
                 onmouseout="this.style.transform=''">
           📧 {% if gmail_connected %}Update Gmail{% else %}Connect Gmail{% endif %}
         </button>
-
-        {% if gmail_connected %}
-        <form method="POST" style="margin:0;"
-              onsubmit="return confirm('Gmail disconnect ho jaegi. Confirm?')">
-          <input type="hidden" name="action" value="disconnect_gmail"/>
-          <button type="submit"
-                  style="padding:12px 20px; background:rgba(239,68,68,0.1);
-                         border:1px solid rgba(239,68,68,0.3); color:#fca5a5;
-                         border-radius:10px; font-size:13px; cursor:pointer; font-weight:600;">
-            <i class="fa-solid fa-plug-circle-xmark" style="margin-right:6px;"></i>Disconnect
-          </button>
-        </form>
-        {% endif %}
       </div>
     </form>
+
+    {% if gmail_connected %}
+    <form method="POST" style="margin-top:10px;"
+          onsubmit="return confirm('Gmail disconnect ho jaegi. Confirm?')">
+      <input type="hidden" name="action" value="disconnect_gmail"/>
+      <button type="submit"
+              style="padding:12px 20px; background:rgba(239,68,68,0.1);
+                     border:1px solid rgba(239,68,68,0.3); color:#fca5a5;
+                     border-radius:10px; font-size:13px; cursor:pointer; font-weight:600;">
+        <i class="fa-solid fa-plug-circle-xmark" style="margin-right:6px;"></i>Disconnect
+      </button>
+    </form>
+    {% endif %}
 
 
 </div>
