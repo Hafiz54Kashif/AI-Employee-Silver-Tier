@@ -120,16 +120,47 @@
     </form>
 
     {% if gmail_connected %}
-    <form method="POST" style="margin-top:10px;"
-          onsubmit="return confirm('Gmail disconnect ho jaegi. Confirm?')">
-      <input type="hidden" name="action" value="disconnect_gmail"/>
-      <button type="submit"
-              style="padding:12px 20px; background:rgba(239,68,68,0.1);
-                     border:1px solid rgba(239,68,68,0.3); color:#fca5a5;
-                     border-radius:10px; font-size:13px; cursor:pointer; font-weight:600;">
-        <i class="fa-solid fa-plug-circle-xmark" style="margin-right:6px;"></i>Disconnect
-      </button>
-    </form>
+    <button onclick="document.getElementById('gmailDisconnectModal').style.display='flex'"
+            style="margin-top:10px; padding:12px 20px; background:rgba(239,68,68,0.1);
+                   border:1px solid rgba(239,68,68,0.3); color:#fca5a5;
+                   border-radius:10px; font-size:13px; cursor:pointer; font-weight:600;">
+      <i class="fa-solid fa-plug-circle-xmark" style="margin-right:6px;"></i>Disconnect Gmail
+    </button>
+
+    <!-- Disconnect Confirmation Modal -->
+    <div id="gmailDisconnectModal"
+         style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+                background:rgba(0,0,0,0.7); z-index:9999;
+                align-items:center; justify-content:center;">
+      <div style="background:#1e1b2e; border:1px solid rgba(239,68,68,0.4);
+                  border-radius:16px; padding:32px; max-width:400px; width:90%; text-align:center;">
+        <div style="font-size:40px; margin-bottom:16px;">⚠️</div>
+        <div style="font-size:18px; font-weight:700; color:#fff; margin-bottom:10px;">
+          Are you sure?
+        </div>
+        <div style="font-size:14px; color:var(--text-muted); margin-bottom:24px; line-height:1.7;">
+          <strong style="color:#fca5a5;">{{ gmail_address }}</strong> disconnect ho jaegi.<br>
+          Auto-reply band ho jaega.
+        </div>
+        <div style="display:flex; gap:12px; justify-content:center;">
+          <button onclick="document.getElementById('gmailDisconnectModal').style.display='none'"
+                  style="padding:11px 28px; background:rgba(255,255,255,0.08);
+                         border:1px solid rgba(255,255,255,0.15); color:#fff;
+                         border-radius:10px; font-size:14px; cursor:pointer; font-weight:600;">
+            Cancel
+          </button>
+          <form method="POST" style="margin:0;">
+            <input type="hidden" name="action" value="disconnect_gmail"/>
+            <button type="submit"
+                    style="padding:11px 28px; background:linear-gradient(135deg,#ef4444,#dc2626);
+                           border:none; color:#fff; border-radius:10px;
+                           font-size:14px; cursor:pointer; font-weight:700;">
+              Yes, Disconnect
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
     {% endif %}
 
 
